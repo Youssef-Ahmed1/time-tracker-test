@@ -185,16 +185,28 @@ function createCSVButton() {
     const taskNameElement = document.querySelector('.text'); // Adjust the selector accordingly
     if (taskNameElement) {
         const taskName = taskNameElement.value;
-        const currentTime = getCurrentTime();
+        const startTime = new Date();
         const currentDay = getCurrentDay();
 
+        const completionTime = calculateTimeElapsed(startTime);
+
         const csvData = [
-            ["Task Name", "Time", "Day"],
-            [taskName, currentTime, currentDay]
+            ["Task Name", "Start Time", "Day", "Time Elapsed (HH:MM:SS)"],
+            [taskName, startTime.toLocaleString(), currentDay, completionTime]
         ];
 
         downloadTaskAsCSV(csvData);
     }
+}
+function calculateTimeElapsed(startTime) {
+    const now = new Date();
+    const timeDifference = now - startTime;
+    
+    const hours = Math.floor(timeDifference / (60 * 60 * 1000)).toString().padStart(2, '0');
+    const minutes = Math.floor((timeDifference % (60 * 60 * 1000)) / (60 * 1000)).toString().padStart(2, '0');
+    const seconds = Math.floor((timeDifference % (60 * 1000)) / 1000).toString().padStart(2, '0');
+
+    return `${hours}:${minutes}:${seconds}`;
 }
 function getCurrentTime() {
     const now = new Date();
@@ -221,6 +233,7 @@ function downloadTaskAsCSV(data) {
     link.click();
     document.body.removeChild(link); // Clean up
 }
+
 
 // ... (the rest of your code)
 
